@@ -1,0 +1,16 @@
+name: wildfire-repro
+channels: [conda-forge, pytorch]
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - scikit-learn
+  - scipy
+  - matplotlib
+  - pyyaml
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pip
+  - pip:
+      - fairlearn
