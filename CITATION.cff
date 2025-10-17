@@ -1,8 +1,0 @@
-cff-version: 1.2.0
-message: "If you use this code, please cite the accompanying paper."
-title: "AI-Driven Micro-Wildfire Prediction — Reproducibility Pack"
-authors:
-  - family-names: Ghosal
-    given-names: Rhea
-date-released: 2025-10-17
-repository-code: "https://example.com/placeholder"  # replace with GitHub URL
