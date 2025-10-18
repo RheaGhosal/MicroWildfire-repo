@@ -13,8 +13,8 @@ All code runs on open synthetic data—no private datasets required.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/wildfire-repo.git
-cd wildfire-repo
+git clone https://github.com/<your-username>/MicroWildfire-repo.git
+cd MicroWildfire-repo
 2. Create environment and install dependencies
 Option A — pip (recommended):
 
@@ -82,7 +82,7 @@ PY
  Repository Structure
 kotlin
 Copy code
-wildfire-repo/
+MicroWildfire-repo/
 ├─ README.md
 ├─ LICENSE
 ├─ CITATION.cff
@@ -109,8 +109,8 @@ wildfire-repo/
  Run in Google Colab
 python
 Copy code
-!git clone https://github.com/<your-username>/wildfire-repo.git
-%cd wildfire-repo
+!git clone https://github.com/<your-username>/MicroWildfire-repo.git
+%cd MicroWildfire-repo
 !pip install -r requirements.txt
 
 from pathlib import Path
