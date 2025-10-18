@@ -2,7 +2,7 @@
 
 **Reproducibility package for:**  
  *“AI-Driven Micro-Wildfire Prediction and Evacuation Planning Using Multimodal Data Fusion”*  
-*(Rhea Ghosal et al.,nisurg.com, 2025)*
+*(Rhea Ghosal et al., IEEE Access, 2025)*
 
 This repository contains the complete experimental pipeline used to reproduce all quantitative tables, fusion results, and fairness metrics from the paper.  
 All code runs on open synthetic data—no private datasets required.
