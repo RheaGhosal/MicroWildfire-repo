@@ -192,3 +192,7 @@ Acknowledgment
 This repository accompanies the IEEE Access paper submission
 and is maintained by Rhea Ghosal (Westlake High School, TX, USA).
 For questions or collaborations: [add email or GitHub contact]
+
+
+Note: This repository was publicly released in October 2025 to accompany the revised IEEE Access submission.
+It reflects the exact scripts and metrics used to produce Tables 3–6 and fairness results in the final manuscript.
