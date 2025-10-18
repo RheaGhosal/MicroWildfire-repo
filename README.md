@@ -1,50 +1,94 @@
-# Real-Time Micro-Wildfire Risk Forecasting — Reproducibility Pack
+#  Wildfire-Repro
 
-This repository reproduces key tables/figures from:
-**"AI-Driven Micro-Wildfire Prediction and Evacuation Planning Using Multimodal Data Fusion".**
+**Reproducibility package for:**  
+ *“AI-Driven Micro-Wildfire Prediction and Evacuation Planning Using Multimodal Data Fusion”*  
+*(Rhea Ghosal et al.,nisurg.com, 2025)*
 
-It addresses reviewer concerns on **(1) multimodal fusion evidence**, **(2) fairness/statistical rigor (EO/SPD/ΔFPR with CIs + calibration)**, **(3) calibration metrics (ECE/Brier)**, and **(4) documented evaluation protocol**:
+This repository contains the complete experimental pipeline used to reproduce all quantitative tables, fusion results, and fairness metrics from the paper.  
+All code runs on open synthetic data—no private datasets required.
 
-- **70/15/15 stratified split** with `random_state: 42`.
-- **Youden’s J**-selected threshold on validation, applied unchanged to test.
-- **Bootstrapped 95% CIs** (default B=200; paired by region ID where available).
-- **Fusion** via **weighted averaging** and **stacking (logistic regression)** with calibrated probabilities.
-- **Fairness metrics** across Köppen–Geiger climate zones (proxy groups), plus ECE/Brier overall and by subgroup.
+---
 
-> ⚠️ **Data**: Use your local copy of public datasets (FIRMS/MODIS/VIIRS/Sentinel, weather/terrain). Place files under `data/` and edit `configs/config.yaml`. To run without real data, see the **synthetic demo** below that exercises the full pipeline.
+##  Quick Start
 
-## Quickstart
+### 1. Clone the repository
 ```bash
-# (A) Create environment
-conda env create -f environment.yml  # or: python -m venv .venv && pip install -r requirements.txt
-conda activate wildfire-repro
+git clone https://github.com/<your-username>/wildfire-repo.git
+cd wildfire-repo
+2. Create environment and install dependencies
+Option A — pip (recommended):
 
-# (B) Configure data paths
-cp configs/config.example.yaml configs/config.yaml
-# edit configs/config.yaml to point to your local data
+bash
+Copy code
+python -m venv .venv
+source .venv/bin/activate        # macOS/Linux
+# .venv\Scripts\Activate.ps1     # Windows PowerShell
+pip install -r requirements.txt
+Option B — Conda:
 
-# (C) Split, train, calibrate, evaluate
-python scripts/split_data.py --config configs/config.yaml
-python scripts/run_fusion.py --config configs/config.yaml
-python scripts/run_bootstrap_ci.py --config configs/config.yaml
+bash
+Copy code
+conda env create -f environment.yml
+conda activate wildfire
+3. Initialize packages (one-time setup)
+bash
+Copy code
+python - << 'PY'
+from pathlib import Path
+Path("src/__init__.py").touch()
+Path("scripts/__init__.py").touch()
+print("Initialized packages: src/, scripts/")
+PY
+4. Run the complete pipeline
+These commands reproduce all outputs from the paper.
 
-# (D) Reproduce tables (stdout/CSV in out/)
-python scripts/reproduce_tables.py --config configs/config.yaml
-```
+macOS/Linux
 
-## Synthetic demo (no data required)
-```bash
-python scripts/run_synthetic_demo.py
-```
-This generates synthetic tabular/image/sequence features and runs the evaluation protocol to produce AUROC/Brier/ECE and fairness metrics with CIs, validating end-to-end logic.
+bash
+Copy code
+export PYTHONPATH=$(pwd)
+python -m scripts.split_data --config configs/config.yaml
+python -m scripts.run_fusion --config configs/config.yaml
+python -m scripts.run_bootstrap_ci --config configs/config.yaml
+python -m scripts.reproduce_tables --config configs/config.yaml
+Windows PowerShell
 
-## Layout
-```
-wildfire-repro/
+powershell
+Copy code
+$env:PYTHONPATH = (Get-Location).Path
+python -m scripts.split_data --config configs/config.yaml
+python -m scripts.run_fusion --config configs/config.yaml
+python -m scripts.run_bootstrap_ci --config configs/config.yaml
+python -m scripts.reproduce_tables --config configs/config.yaml
+All outputs will appear in the out/ directory.
+
+ Expected Outputs
+bash
+Copy code
+out/
+ ├─ splits.json          # deterministic 70/15/15 split (seed = 42)
+ ├─ fusion_results.json   # performance metrics for fusion & baselines
+ ├─ bootstrap_ci.json     # 95% confidence intervals for all metrics
+ └─ fusion_table.csv      # main paper results table
+Check them quickly:
+
+bash
+Copy code
+python - << 'PY'
+import pandas as pd, json
+print(pd.read_csv("out/fusion_table.csv").head(), "\n")
+print(json.load(open("out/bootstrap_ci.json")).keys())
+PY
+ Repository Structure
+kotlin
+Copy code
+wildfire-repo/
 ├─ README.md
-├─ environment.yml / requirements.txt
+├─ LICENSE
+├─ CITATION.cff
+├─ environment.yml
 ├─ configs/
-│  └─ config.example.yaml
+│  └─ config.yaml
 ├─ src/
 │  ├─ data.py
 │  ├─ models.py
@@ -60,25 +104,91 @@ wildfire-repro/
 │  └─ run_synthetic_demo.py
 ├─ tests/
 │  └─ test_metrics.py
-├─ notebooks/
-│  └─ 01_reproduce_tables.ipynb
-├─ CITATION.cff
-├─ LICENSE
-└─ Makefile
-```
+└─ out/
+    └─ (generated results)
+📓 Run in Google Colab
+python
+Copy code
+!git clone https://github.com/<your-username>/wildfire-repo.git
+%cd wildfire-repo
+!pip install -r requirements.txt
 
-## Outputs
-- `out/metrics_*.csv` — AUROC/Brier/ECE per model with 95% CIs.
-- `out/fairness_ci.csv` — EO/SPD/ΔFPR pre/post calibration with 95% CIs.
-- `out/fusion_delta_auc.csv` — paired ΔAUROC vs best single model.
-- `out/acc_f1_ci.csv` — Accuracy/F1 with 95% CIs for VAL-chosen threshold.
+from pathlib import Path
+Path("src/__init__.py").touch()
+Path("scripts/__init__.py").touch()
 
-## Reviewer-facing checklist (copy to your paper)
-- Exact split policy and seeds documented (`random_state: 42`).
-- Thresholding policy documented (Youden’s J on VAL, fixed on TEST).
-- Bootstrap protocol documented (B=200; paired by region if available).
-- Fusion method, calibration method, and fairness groups defined.
-- Scripts provided to regenerate tables; unit tests for metrics correctness.
+import os
+os.environ["PYTHONPATH"] = os.getcwd()
 
-## How to cite
-See `CITATION.cff`.
+!python -m scripts.split_data --config configs/config.yaml
+!python -m scripts.run_fusion --config configs/config.yaml
+!python -m scripts.run_bootstrap_ci --config configs/config.yaml
+!python -m scripts.reproduce_tables --config configs/config.yaml
+Optionally open the interactive notebook:
+
+bash
+Copy code
+notebooks/wild-fire.ipynb
+ Configuration
+You can modify:
+
+configs/config.yaml → parameters, fusion type, metric settings.
+
+src/metrics.py → add or edit metrics (e.g., EO/SPD/ΔFPR definitions).
+
+ What Each Script Does
+Script	Description
+scripts/split_data.py	Creates fixed stratified split and saves splits.json.
+scripts/run_fusion.py	Trains baseline and fusion models; computes AUROC/Brier/ECE.
+scripts/run_bootstrap_ci.py	Bootstraps confidence intervals (default B = 200).
+scripts/reproduce_tables.py	Compiles and formats paper tables.
+src/metrics.py	Implements fairness and calibration metrics.
+src/fusion.py	Implements weighted and stacking fusion.
+
+ Reproducibility Protocol
+Split: 70/15/15 stratified (seed = 42)
+
+Thresholding: single validation-selected threshold (Youden’s J)
+
+Metrics: AUROC, Brier score, ECE, Accuracy, F1
+
+Fairness: EO, SPD, ΔFPR with bootstrap 95% CIs
+
+Fusion: weighted average & stacking vs best single modality
+
+ Troubleshooting
+ ModuleNotFoundError: No module named 'src'
+ Run export PYTHONPATH=$(pwd) (Linux/macOS) or $env:PYTHONPATH=(Get-Location).Path (Windows).
+Ensure both src/__init__.py and scripts/__init__.py exist.
+
+ TypeError: keys must be str, int, float, bool or None, not int64
+ Already patched. If you modify fairness metrics, cast dict keys:
+
+python
+Copy code
+{k.item() if hasattr(k, "item") else k: v for k, v in data.items()}
+ CalledProcessError when running scripts
+ Run as modules, not plain scripts:
+
+bash
+Copy code
+python -m scripts.run_fusion --config configs/config.yaml
+ Citation
+If you use this repository, please cite:
+
+bibtex
+Copy code
+@article{ghosal2025wildfire,
+  title   = {AI-Driven Micro-Wildfire Prediction and Evacuation Planning Using Multimodal Data Fusion},
+  author  = {Rhea Ghosal and others},
+  journal = {IEEE Access},
+  year    = {2025}
+}
+ License
+This project is licensed under the MIT License.
+See the LICENSE file for details.
+
+Acknowledgment
+This repository accompanies the IEEE Access paper submission
+and is maintained by Rhea Ghosal (Westlake High School, TX, USA).
+For questions or collaborations: [add email or GitHub contact]
