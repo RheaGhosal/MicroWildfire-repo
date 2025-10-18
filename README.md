@@ -106,7 +106,7 @@ wildfire-repo/
 │  └─ test_metrics.py
 └─ out/
     └─ (generated results)
-📓 Run in Google Colab
+ Run in Google Colab
 python
 Copy code
 !git clone https://github.com/<your-username>/wildfire-repo.git
