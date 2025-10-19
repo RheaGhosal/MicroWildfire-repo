@@ -38,8 +38,7 @@ python -m scripts.run_bootstrap_ci --config configs/config.yaml
 python -m scripts.reproduce_tables --config configs/config.yaml
 
  Expected Outputs
-bash
-Copy code
+
 out/
  ├─ splits.json          # deterministic 70/15/15 split (seed = 42)
  ├─ fusion_results.json   # performance metrics for fusion & baselines
@@ -108,8 +107,6 @@ Ensure both src/__init__.py and scripts/__init__.py exist.
  TypeError: keys must be str, int, float, bool or None, not int64
  Already patched. If you modify fairness metrics, cast dict keys:
 
-python
-Copy code
 {k.item() if hasattr(k, "item") else k: v for k, v in data.items()}
  CalledProcessError when running scripts
  Run as modules, not plain scripts:
