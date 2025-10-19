@@ -152,4 +152,7 @@ For questions or collaborations: [[GitHub contact]](https://github.com/RheaGhosa
 
 
 Note: This repository was publicly released in October 2025 to accompany the revised IEEE Access submission. 
-It reflects the exact scripts and metrics used to produce Tables 3–6 and fairness results in the final manuscript.
+This contains a complete reproducible pipeline used to generate all results reported in the manuscript.  
+Additional auxiliary scripts and experiment logs will be made available upon final publication.
+
+
