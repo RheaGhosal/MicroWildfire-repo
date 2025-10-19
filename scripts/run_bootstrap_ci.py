@@ -36,6 +36,10 @@ def main(cfg):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
+    ap.add_argument("--model",  choices=["weighted","stacking","best"], default="stacking")
     args = ap.parse_args()
-    cfg = yaml.safe_load(open(args.config))
+    cfg = yaml.safe_load(open(args.config)) or {}
     main(cfg)
+# when loading probabilities, select based on args.model
+# e.g., from out/fusion_results.json or directly recompute:
+# probs = get_probs(model=args.model)
