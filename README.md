@@ -13,26 +13,14 @@ All code runs on open synthetic data—no private datasets required.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/MicroWildfire-repo.git
+git clone https://github.com/RheaGhosal/MicroWildfire-repo.git
 cd MicroWildfire-repo
 2. Create environment and install dependencies
-Option A — pip (recommended):
-
-bash
-Copy code
 python -m venv .venv
 source .venv/bin/activate        # macOS/Linux
 # .venv\Scripts\Activate.ps1     # Windows PowerShell
 pip install -r requirements.txt
-Option B — Conda:
-
-bash
-Copy code
-conda env create -f environment.yml
-conda activate wildfire
 3. Initialize packages (one-time setup)
-bash
-Copy code
 python - << 'PY'
 from pathlib import Path
 Path("src/__init__.py").touch()
@@ -43,24 +31,11 @@ PY
 These commands reproduce all outputs from the paper.
 
 macOS/Linux
-
-bash
-Copy code
 export PYTHONPATH=$(pwd)
 python -m scripts.split_data --config configs/config.yaml
 python -m scripts.run_fusion --config configs/config.yaml
 python -m scripts.run_bootstrap_ci --config configs/config.yaml
 python -m scripts.reproduce_tables --config configs/config.yaml
-Windows PowerShell
-
-powershell
-Copy code
-$env:PYTHONPATH = (Get-Location).Path
-python -m scripts.split_data --config configs/config.yaml
-python -m scripts.run_fusion --config configs/config.yaml
-python -m scripts.run_bootstrap_ci --config configs/config.yaml
-python -m scripts.reproduce_tables --config configs/config.yaml
-All outputs will appear in the out/ directory.
 
  Expected Outputs
 bash
@@ -70,10 +45,7 @@ out/
  ├─ fusion_results.json   # performance metrics for fusion & baselines
  ├─ bootstrap_ci.json     # 95% confidence intervals for all metrics
  └─ fusion_table.csv      # main paper results table
-Check them quickly:
 
-bash
-Copy code
 python - << 'PY'
 import pandas as pd, json
 print(pd.read_csv("out/fusion_table.csv").head(), "\n")
@@ -106,35 +78,7 @@ MicroWildfire-repo/
 │  └─ test_metrics.py
 └─ out/
     └─ (generated results)
- Run in Google Colab
-python
-Copy code
-!git clone https://github.com/<your-username>/MicroWildfire-repo.git
-%cd MicroWildfire-repo
-!pip install -r requirements.txt
 
-from pathlib import Path
-Path("src/__init__.py").touch()
-Path("scripts/__init__.py").touch()
-
-import os
-os.environ["PYTHONPATH"] = os.getcwd()
-
-!python -m scripts.split_data --config configs/config.yaml
-!python -m scripts.run_fusion --config configs/config.yaml
-!python -m scripts.run_bootstrap_ci --config configs/config.yaml
-!python -m scripts.reproduce_tables --config configs/config.yaml
-Optionally open the interactive notebook:
-
-bash
-Copy code
-notebooks/wild-fire.ipynb
- Configuration
-You can modify:
-
-configs/config.yaml → parameters, fusion type, metric settings.
-
-src/metrics.py → add or edit metrics (e.g., EO/SPD/ΔFPR definitions).
 
  What Each Script Does
 Script	Description
@@ -170,14 +114,13 @@ Copy code
  CalledProcessError when running scripts
  Run as modules, not plain scripts:
 
-bash
-Copy code
+
 python -m scripts.run_fusion --config configs/config.yaml
  Citation
 If you use this repository, please cite:
 
 bibtex
-Copy code
+
 @article{ghosal2025wildfire,
   title   = {AI-Driven Micro-Wildfire Prediction and Evacuation Planning Using Multimodal Data Fusion},
   author  = {Rhea Ghosal and others},
