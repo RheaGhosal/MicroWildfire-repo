@@ -6,8 +6,10 @@
 
 This repository contains the complete experimental pipeline used to reproduce all quantitative tables, fusion results, and fairness metrics from the paper.  
 All code runs on open synthetic data—no private datasets required.
+>  **Tested Environment:** macOS- Sequoia 15.7.1 and Ubuntu 22.04 (Python 3.11).  
+> Verified on both platforms with identical results. For Windows, use WSL 2.
 
----
+
 
 ##  Quick Start
 
@@ -18,7 +20,6 @@ cd MicroWildfire-repo
 2. Create environment and install dependencies
 python -m venv .venv
 source .venv/bin/activate        # macOS/Linux
-# .venv\Scripts\Activate.ps1     # Windows PowerShell
 pip install -r requirements.txt
 3. Initialize packages (one-time setup)
 python - << 'PY'
@@ -28,16 +29,15 @@ Path("scripts/__init__.py").touch()
 print("Initialized packages: src/, scripts/")
 PY
 4. Run the complete pipeline
-These commands reproduce all outputs from the paper.
 
-macOS/Linux
+#macOS/Linux
 export PYTHONPATH=$(pwd)
 python -m scripts.split_data --config configs/config.yaml
 python -m scripts.run_fusion --config configs/config.yaml
 python -m scripts.run_bootstrap_ci --config configs/config.yaml
 python -m scripts.reproduce_tables --config configs/config.yaml
 
- Expected Outputs
+Expected Outputs
 
 out/
  ├─ splits.json          # deterministic 70/15/15 split (seed = 42)
@@ -45,14 +45,22 @@ out/
  ├─ bootstrap_ci.json     # 95% confidence intervals for all metrics
  └─ fusion_table.csv      # main paper results table
 
+Quickly preview results inside the environment
 python - << 'PY'
 import pandas as pd, json
 print(pd.read_csv("out/fusion_table.csv").head(), "\n")
 print(json.load(open("out/bootstrap_ci.json")).keys())
 PY
+The following should be the output-
+        Model     AUROC     Brier       ECE       Acc        F1
+0  best_metrics  0.724062  0.222890  0.122045  0.654000  0.584468
+1      weighted  0.750788  0.223353  0.178210  0.692667  0.612279
+2      stacking  0.755993  0.192161  0.037093  0.706000  0.552284 
+
+dict_keys(['auroc', 'brier', 'ece', 'eo', 'spd', 'delta_fpr'])
+
  Repository Structure
-kotlin
-Copy code
+
 MicroWildfire-repo/
 ├─ README.md
 ├─ LICENSE
@@ -76,8 +84,11 @@ MicroWildfire-repo/
 ├─ tests/
 │  └─ test_metrics.py
 └─ out/
-    └─ (generated results)
-
+│  ├─ bootstrap_ci.json
+│  ├─ fusion_results.json
+│  ├─ fusion_table.cs
+│  ├─ reproduce_tables.py
+│  └─ splits.json
 
  What Each Script Does
 Script	Description
@@ -101,18 +112,18 @@ Fusion: weighted average & stacking vs best single modality
 
  Troubleshooting
  ModuleNotFoundError: No module named 'src'
- Run export PYTHONPATH=$(pwd) (Linux/macOS) or $env:PYTHONPATH=(Get-Location).Path (Windows).
+ Run export PYTHONPATH=$(pwd) (Linux/macOS) 
 Ensure both src/__init__.py and scripts/__init__.py exist.
 
- TypeError: keys must be str, int, float, bool or None, not int64
- Already patched. If you modify fairness metrics, cast dict keys:
+ TypeError: keys must be str, int, float, bool or None, not int64.
+ If you modify fairness metrics, cast dict keys:
 
 {k.item() if hasattr(k, "item") else k: v for k, v in data.items()}
  CalledProcessError when running scripts
  Run as modules, not plain scripts:
 
-
 python -m scripts.run_fusion --config configs/config.yaml
+
  Citation
 If you use this repository, please cite:
 
@@ -131,8 +142,8 @@ See the LICENSE file for details.
 Acknowledgment
 This repository accompanies the IEEE Access paper submission
 and is maintained by Rhea Ghosal (Westlake High School, TX, USA).
-For questions or collaborations: [add email or GitHub contact]
+For questions or collaborations: [[GitHub contact]](https://github.com/RheaGhosal/MicroWildfire-repo/issues)
 
 
-Note: This repository was publicly released in October 2025 to accompany the revised IEEE Access submission.
+Note: This repository was publicly released in October 2025 to accompany the revised IEEE Access submission. 
 It reflects the exact scripts and metrics used to produce Tables 3–6 and fairness results in the final manuscript.
