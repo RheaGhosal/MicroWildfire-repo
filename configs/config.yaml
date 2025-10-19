@@ -1,1 +1,10 @@
+# configs/config.yaml
+seed: 42
+
+bootstrap:
+  B: 200
+
+fusion:
+  weighted:
+    weights: [0.2, 0.3, 0.5]   # [CNN, LSTM, RF]
 
