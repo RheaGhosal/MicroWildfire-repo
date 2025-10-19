@@ -34,8 +34,22 @@ PY
 export PYTHONPATH=$(pwd)
 python -m scripts.split_data --config configs/config.yaml
 python -m scripts.run_fusion --config configs/config.yaml
-python -m scripts.run_bootstrap_ci --config configs/config.yaml
+# Choose which model to compute confidence intervals for:
+# (Default = stacking)
+python -m scripts.run_bootstrap_ci --config configs/config.yaml --model stacking
+
+# Or for weighted fusion:
+# python -m scripts.run_bootstrap_ci --config configs/config.yaml --model weighted
+
+# Or for the best single-modality baseline:
+# python -m scripts.run_bootstrap_ci --config configs/config.yaml --model best
+
 python -m scripts.reproduce_tables --config configs/config.yaml
+
+Tip: To keep separate CI files per model, rename after each run:
+
+mv out/bootstrap_ci.json out/bootstrap_ci_stacking.json
+mv out/bootstrap_ci.json out/bootstrap_ci_weighted.json
 
 Expected Outputs
 
@@ -51,14 +65,6 @@ import pandas as pd, json
 print(pd.read_csv("out/fusion_table.csv").head(), "\n")
 print(json.load(open("out/bootstrap_ci.json")).keys())
 PY
-The following should be the output-
-        Model     AUROC     Brier       ECE       Acc        F1
-0  best_metrics  0.724062  0.222890  0.122045  0.654000  0.584468
-1      weighted  0.750788  0.223353  0.178210  0.692667  0.612279
-2      stacking  0.755993  0.192161  0.037093  0.706000  0.552284 
-
-dict_keys(['auroc', 'brier', 'ece', 'eo', 'spd', 'delta_fpr'])
-
  Repository Structure
 
 MicroWildfire-repo/
